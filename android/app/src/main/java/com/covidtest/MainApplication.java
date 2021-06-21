@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+// import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 import org.reactnative.camera.RNCameraPackage;
 // import org.reactnative.camera.RNCameraPackage;

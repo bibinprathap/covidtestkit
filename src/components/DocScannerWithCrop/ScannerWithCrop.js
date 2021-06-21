@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         left: 25,
         position: 'absolute',
         right: 25,
-       
+
     },
     buttonContainer: {
         alignItems: 'flex-end',
@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
     },
     scanner: {
         flex: 1,
-        
-       
+
+
     },
 });
 
@@ -627,7 +627,7 @@ export default class ScannerX extends PureComponent {
         return (
             <>
                 {loadingState}
-              
+
             </>
         );
     }
@@ -660,24 +660,24 @@ export default class ScannerX extends PureComponent {
             return (
                 <View
                     style={[{
-                       // backgroundColor: 'transparent',
+                        // backgroundColor: 'transparent',
                         position: 'relative',
                         marginTop: previewSize.marginTop,
                         marginLeft: previewSize.marginLeft,
                         height: `${previewSize.height * 100}%`,
                         width: `${previewSize.width * 100}%`,
-                        
-                    //     borderColor: 'white',
-                    //     borderWidth: 1,
-                    //     borderRadius: 30,
-                       
-                    //    //borderColor: '#fff',
-                    //    alignItems: 'center',
-                    //    justifyContent: 'center',
-                     
+
+                        //     borderColor: 'white',
+                        //     borderWidth: 1,
+                        //     borderRadius: 30,
+
+                        //    //borderColor: '#fff',
+                        //    alignItems: 'center',
+                        //    justifyContent: 'center',
+
 
                     },]}>
-                      
+
                     <Scanner
                         onPictureTaken={this.onPictureTaken}
                         onPictureProcessed={this.onPictureProcessed}
@@ -694,8 +694,17 @@ export default class ScannerX extends PureComponent {
                         }
                         style={[styles.scanner]}
                     />
-                
-                  
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, }}>
+                        <View style={{ height: 100, backgroundColor: 'rgba(0,0,0,0.7)' }}></View>
+                        <View style={{ height: 100, flexDirection: 'row' }}>
+                            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
+                            <View style={{ flex: 2, }} />
+                            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
+                        </View>
+                        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
+                    </View>
+
+
                     {/* {rectangleOverlay} */}
                     <Animated.View
                         style={{
@@ -705,46 +714,52 @@ export default class ScannerX extends PureComponent {
                         }}
                     />
                     {this.renderCameraOverlay()}
-                    <View style={{position: 'absolute' ,
-                         top: '20%', left: 0, right: 0, bottom: 0, justifyContent: 'center', 
-                          alignSelf: 'center',
-                         alignItems: 'center',
-                         backgroundColor: 'rgba(1,1,1,0.9)',
-                         width:'120%'
-                        }}>
-   <SafeAreaView style={[styles.overlay,{marginHorizontal:'20%'}]}>
-                    {this.renderCameraControls()}
-                </SafeAreaView>
-                     
-</View>
-<View style={{position: 'absolute' ,
-                         top:0, left: 0, right: 0, bottom: '90%', justifyContent: 'center', 
-                          alignSelf: 'center',
-                         alignItems: 'center',
-                         backgroundColor: 'rgba(1,1,1,0.9)',
-                         width:'120%'
-                        }}>
-  
-                     
-</View>
+                    <View style={{
+                        position: 'absolute',
+                        top: '20%', left: 0, right: 0, bottom: 0, justifyContent: 'center',
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        // backgroundColor: 'rgba(1,1,1,0.9)',
+                        width: '120%'
+                    }}>
+                        <SafeAreaView style={[styles.overlay, { marginHorizontal: '20%' }]}>
+                            {this.renderCameraControls()}
+                        </SafeAreaView>
 
-<View style={{position: 'absolute' ,
-                         top: '10%', left: 0, right: 0, bottom: '80%', justifyContent: 'center', 
-                          alignSelf: 'center',
-                         alignItems: 'center',
-                         flexDirection:"row",
-                       
-                         with:'120%'
-                        }}>
+                    </View>
 
-                            <View style={{  backgroundColor: 'rgba(1,1,1,0.9)',minHeight:'100%' ,minWidth:'60%'}}></View>
-                            <View style={{flex:1,minHeight:100 ,minWidth:150}}></View>
-                            <View style={{flex:1, backgroundColor: 'rgba(1,1,1,0.9)' ,minHeight:'100%' ,minWidth:'60%'}}></View>
- 
-                     
-</View>
-                   
-                       
+
+
+                    {/* <View style={{
+                        position: 'absolute',
+                        top: 0, left: 0, right: 0, bottom: '90%', justifyContent: 'center',
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(1,1,1,0.9)',
+                        width: '120%'
+                    }}>
+
+
+                    </View>
+
+                    <View style={{
+                        position: 'absolute',
+                        top: '10%', left: 0, right: 0, bottom: '80%', justifyContent: 'center',
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        flexDirection: "row",
+
+                        with: '120%'
+                    }}>
+
+                        <View style={{ backgroundColor: 'rgba(1,1,1,0.9)', minHeight: '100%', minWidth: '60%' }}></View>
+                        <View style={{ flex: 1, minHeight: 100, minWidth: 150 }}></View>
+                        <View style={{ flex: 1, backgroundColor: 'rgba(1,1,1,0.9)', minHeight: '100%', minWidth: '60%' }}></View>
+
+
+                    </View> */}
+
+
                 </View>
             );
         }

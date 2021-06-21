@@ -24,6 +24,7 @@ target 'CovidTest' do
 
   pod 'react-native-html-to-pdf', :path => '../node_modules/react-native-html-to-pdf'
 
+
   target 'CovidTestTests' do
     inherit! :complete
     # Pods for testing

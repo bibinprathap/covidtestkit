@@ -8,19 +8,19 @@ import { CommonActions } from '@react-navigation/native';
 
 export default function inddex(props) {
 
-    const { userDetials, setUserDetails } = useContext(AppContext)
+    const { setAuthToken } = useContext(AppContext)
     useEffect(() => {
         getSyncInfo()
     }, [])
 
     const getSyncInfo = async () => {
         try {
-            const value = await AsyncStorage.getItem('@userdata');
+            const value = await AsyncStorage.getItem('@userToken');
 
             if (value !== null) {
                 // userdata=JSON.parse(value).userToken
-                console.warn('HAHAHA', JSON.parse(value))
-                setUserDetails(JSON.parse(value))
+                console.warn('HAHAHA', JSON.parse(value).authToken)
+                setAuthToken(JSON.parse(value).authToken)
                 props.navigation.dispatch(
                     CommonActions.reset({
                         index: 0,

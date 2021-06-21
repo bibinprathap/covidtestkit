@@ -9,10 +9,10 @@ function TestCard(props) {
 
     const getcolor = () => {
         let result = Data.result
-        if (result == 'positive') {
+        if (result == 'positive' || result == 'Positive') {
             return '#B52B2B'
         }
-        else if (result == 'negative') {
+        else if (result == 'negative' || result == 'Negative') {
             return '#39C42F'
         }
         else return 'lightblue'

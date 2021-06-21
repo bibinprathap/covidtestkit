@@ -15,13 +15,16 @@ import API from '../../appConfig/api'
 import Apiconstants from '../../appConfig/APIConstants'
 import { CommonActions } from '@react-navigation/native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Button from "../../components/Button";
 import Header from "../../components/Header";
-const WIDTH = Dimensions.get("window").width;
-const HEIGHT = Dimensions.get("window").height;
+import AppContext from "../../appConfig/constant";
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+
 
 function OTPScreen({ navigation, route }) {
+
+    const { authThoken, setAuthToken, getUserDetails } = useContext(AppContext)
     const { number } = route.params
     const [Otpvalue, setOtpvalue] = useState('');
     const [veriying, setVerifying] = useState(false)
@@ -50,26 +53,13 @@ function OTPScreen({ navigation, route }) {
                         text: "OTP Matched",
                         backgroundColor: "#FCB913",
                     });
-                    if (res.data.registered == true) {
-                        navigation.navigate('home')
-                        navigation.dispatch(
-                            CommonActions.reset({
-                                index: 0,
-                                routes: [
-                                    { name: 'adhar' },
-
-                                ],
-                            })
-                        );
-                    }
-                    else {
-                        navigation.navigate('adhar')
-                    }
+                    getUserDetails(res.data.authcode)
+                    storeData(res.data)
                 }
                 else {
                     Snackbar.show({
                         duration: Snackbar.LENGTH_LONG,
-                        text: "OTP Mismattch",
+                        text: "OTP Mismatch",
                         backgroundColor: "red",
                     });
                     setVerifying(false)
@@ -119,6 +109,35 @@ function OTPScreen({ navigation, route }) {
 
 
             });
+    }
+
+    const storeData = async (RES_DATA) => {
+        console.warn('STORING TOKEN')
+        var value = {
+            authToken: RES_DATA.authcode,
+        }
+        try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem('@userToken', jsonValue)
+            setAuthToken(RES_DATA.authcode)
+            if (RES_DATA.registered == true) {
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [
+                            { name: 'home' },
+
+                        ],
+                    })
+                );
+            }
+            else {
+                navigation.navigate('adhar')
+            }
+
+        } catch (e) {
+            // saving error
+        }
     }
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>

@@ -23,11 +23,11 @@ import Header from '../../components/Header';
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-export default function AadhaarDetails({ navigation }) {
-
+export default function AadhaarDetails(props) {
     const [adharDetails, setAdharDetails] = useState(null)
     const [calling, setCalling] = useState(false)
 
+    const addSub = props.route.params ? true : false
 
 
 
@@ -37,7 +37,7 @@ export default function AadhaarDetails({ navigation }) {
                 onSuccessAdharRequest={(res) => {
                     setAdharDetails(res)
                     var adharDetails = res
-                    navigation.navigate('verifyadhar', { adharDetails })
+                    props.navigation.navigate('verifyadhar', { adharDetails, addSub })
 
                     console.warn(res)
                 }}

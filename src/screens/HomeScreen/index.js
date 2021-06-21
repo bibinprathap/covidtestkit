@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { StyleSheet, Text, View, Modal, ScrollView, SafeAreaView, TouchableOpacity, Image, Alert } from 'react-native'
 import Button from '../../components/Button'
-import QrScanner from '../../components/QrScanner'
 import Fonts from '../../appConfig/Fonts'
 import HomeHeader from './components/HomeHeader'
 import VideoBanner from './components/VideoBanner'
@@ -22,8 +21,7 @@ import { CommonActions } from '@react-navigation/native';
 
 
 export default function index(props) {
-    const { userDetials } = useContext(AppContext)
-    const [showmodal, setModal] = useState(false)
+    const { userProfile, authToken } = useContext(AppContext)
     const [showMenu, setMenu] = useState(false)
     const [calling, setCalling] = useState(false)
     const [testId, setId] = useState(null)
@@ -44,102 +42,14 @@ export default function index(props) {
     ]
 
 
-    const registerForTesting = () => {
-        setCalling(true)
-        var data = new FormData();
-        data.append('name', userDetials.name);
-        data.append('gender', userDetials.gender);
-        data.append('birth_date', userDetials.Birth_date);
-        data.append('uid', userDetials.uId);
-
-
-        console.warn(data)
 
 
 
-        API(Apiconstants.REGISTER_USER_FOR_TEST, data, "POST", null)
-            .then((res) => {
-                setCalling(false)
-                console.warn(res.data)
-                if (res.data.code == 200) {
-                    setId(res.data.test_id)
-                    setModal(true)
-                    Snackbar.show({
-                        duration: Snackbar.LENGTH_LONG,
-                        text: "Successfully Saved",
-                        backgroundColor: "green",
-                    });
-                }
-                else {
-                    Snackbar.show({
-                        duration: Snackbar.LENGTH_LONG,
-                        text: "Failed to Register",
-                        backgroundColor: "red",
-                    });
 
-                }
-            })
-            .catch((error) => {
-                console.warn(error);
-                setCalling(false)
-                Snackbar.show({
-                    duration: Snackbar.LENGTH_LONG,
-                    text: "Failed to Register",
-                    backgroundColor: "red",
-                });
-
-
-            });
-    }
-
-
-    const registerTestKit = (code) => {
-        setCalling(true)
-        var data = new FormData();
-        data.append('kit_id', code);
-        data.append('test_id', testId);
-        console.warn(data)
-
-
-
-        API(Apiconstants.REGISTER_TEST_KIT, data, "POST", null)
-            .then((res) => {
-                setCalling(false)
-                console.warn(res.data)
-                if (res.data.code == 200) {
-                    Snackbar.show({
-                        duration: Snackbar.LENGTH_LONG,
-                        text: "Test kit Registered Successfully",
-                        backgroundColor: "green",
-                    });
-                    props.navigation.navigate('test', { code, testId })
-
-                }
-                else {
-                    Snackbar.show({
-                        duration: Snackbar.LENGTH_LONG,
-                        text: res.data.status,
-                        backgroundColor: "red",
-                    });
-
-                }
-            })
-            .catch((error) => {
-                console.warn(error);
-                setCalling(false)
-                Snackbar.show({
-                    duration: Snackbar.LENGTH_LONG,
-                    text: "Test kit Registration Failed",
-                    backgroundColor: "red",
-                });
-
-
-            });
-    }
 
     const onLogout = async () => {
         try {
-            await AsyncStorage.removeItem('@userdata')
+            await AsyncStorage.removeItem('@userToken')
             props.navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
@@ -201,7 +111,7 @@ export default function index(props) {
                 Title='Take Test'
                 disabled={calling}
                 onPress={() => {
-                    registerForTesting()
+                    props.navigation.navigate('users')
                 }}
                 style={{
                     marginHorizontal: 3,
@@ -211,23 +121,7 @@ export default function index(props) {
                     bottom: 15,
                 }
                 } />
-            <Modal
-                visible={showmodal}
-                animationType='fade'
-                onRequestClose={() => setModal(false)}
-            >
-                <QrScanner
-                    onReadSuccess={(code) => {
-                        console.warn('CODE IS', code)
-                        registerTestKit(code)
-                        // props.navigation.navigate('test', { code })
 
-                        setModal(false)
-                    }}
-                    onClose={() => setModal(false)}
-                />
-
-            </Modal>
             <Modal
                 visible={showMenu}
                 animationType='slide'
@@ -242,12 +136,18 @@ export default function index(props) {
                     </TouchableOpacity>
                     {
                         [
-                            { name: 'Profile', screen: 'profile' }, { name: 'User History', screen: 'userhistory' }, { name: 'Check Results', screen: 'adharresult' }, { name: 'Logout', }
+                            { name: 'Profile', screen: 'profile' },
+                            { name: 'User History', screen: 'userhistory' },
+                            { name: 'Add New Member', screen: 'adhar' },
+                            // { name: 'Test Results', screen: 'testdetails' },
+                            { name: 'Check Results', screen: 'adharresult' },
+                            { name: 'Logout', }
                         ].map((item) => (
                             <TouchableOpacity
                                 onPress={() => {
                                     if (item.screen) {
-                                        props.navigation.navigate(item.screen)
+                                        var from = 'menu'
+                                        props.navigation.navigate(item.screen, { from })
                                         setMenu(false)
 
                                     }

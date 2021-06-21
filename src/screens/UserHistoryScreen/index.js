@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList, TouchableOpacity } from 'react-native'
 import Config from '../../appConfig/Config'
 import Fonts from '../../appConfig/Fonts'
@@ -11,8 +11,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import API from '../../appConfig/api'
 import Apiconstants from '../../appConfig/APIConstants'
 import FastImage from 'react-native-fast-image'
+import AppContext from '../../appConfig/constant'
 
 export default function index(props) {
+    const { authToken } = useContext(AppContext)
     const [showSort, setShowSort] = useState(false)
     const [userTestHistory, setTestHistory] = useState([])
     const [covidGraph, setCovidGraph] = useState(null)
@@ -26,7 +28,9 @@ export default function index(props) {
     }, [])
 
     const getTestHistory = () => {
-        API(Apiconstants.TEST_HISTORY, null, "POST", null)
+        var data = new FormData()
+        data.append('authcode', authToken)
+        API(Apiconstants.TEST_HISTORY, data, "POST", null)
             .then((res) => {
                 // setCalling(false)
                 console.warn('TEST HISTORY', res.data)
@@ -37,7 +41,9 @@ export default function index(props) {
             });
     }
     const getTestGraph = () => {
-        API(Apiconstants.COVID_TEST_GRAPG, null, "POST", null)
+        var data = new FormData()
+        data.append('authcode', authToken)
+        API(Apiconstants.COVID_TEST_GRAPG, data, "POST", null)
             .then((res) => {
                 // setCalling(false)
                 console.warn('TEST HISTORY', res.data)

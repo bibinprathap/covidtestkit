@@ -18,32 +18,32 @@ import AppContext from '../../appConfig/constant';
 const width = Dimensions.get('window').width;
 
 export default function index(props) {
-    const { setUserDetails } = useContext(AppContext)
-    const { adharDetails } = props.route.params
-    const [newadharDetails, setAdharDetails] = useState({});
+    const { setUserDetails, authToken } = useContext(AppContext)
+    const { adharDetails, addSub } = props.route.params
 
 
-    const [adharNumber, setAdharNumber] = useState('')
+
+    const [adharNumber, setAdharNumber] = useState(adharDetails.Uid)
     const [name, setName] = useState(adharDetails.Name)
     const [dob, setDob] = useState(adharDetails.Birth_date)
     const [gender, setGender] = useState(adharDetails.Gender)
     const [calling, setCalling] = useState(false)
-    if (!newadharDetails.Uid && adharDetails) {
-        console.warn('newadharDetails', adharDetails)
-        setAdharDetails(adharDetails);
-    }
+
 
     const saveUserDetails = () => {
         var adharnumber_exspaces = adharNumber.replace(/ /g, '')
         setCalling(true)
         var data = new FormData();
+        data.append('authcode', authToken);
+        data.append('uid', adharnumber_exspaces);
+        data.append('birth_date', dob);
         data.append('name', name);
         data.append('gender', gender);
-        data.append('birth_date', dob);
-        data.append('uid', adharnumber_exspaces);
         console.warn(data)
 
-        API(Apiconstants.REGISTER_USER, data, "POST", null)
+        let call = addSub ? Apiconstants.ADD_SUB_USER : Apiconstants.REGISTER_USER
+
+        API(call, data, "POST", null)
             .then((res) => {
                 setCalling(false)
                 console.warn(res.data)
@@ -53,12 +53,21 @@ export default function index(props) {
                         text: "Successfully Saved",
                         backgroundColor: "green",
                     });
-                    storeData()
+                    props.navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [
+                                { name: 'home' },
+
+                            ],
+                        })
+                    );
+                    // storeData()
                 }
                 else {
                     Snackbar.show({
                         duration: Snackbar.LENGTH_LONG,
-                        text: "Failed to Saved",
+                        text: res.data.status,
                         backgroundColor: "red",
                     });
 
@@ -79,33 +88,6 @@ export default function index(props) {
 
     }
 
-    const storeData = async () => {
-        console.warn('STORING ASYNC')
-        var value = {
-            name: name,
-            gender: gender,
-            Birth_date: dob,
-            uId: adharNumber
-        }
-        try {
-            const jsonValue = JSON.stringify(value)
-            await AsyncStorage.setItem('@userdata', jsonValue)
-            setUserDetails(value)
-            props.navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        { name: 'home' },
-
-                    ],
-                })
-            );
-            // props.navigation.navigate('home')
-
-        } catch (e) {
-            // saving error
-        }
-    }
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -120,7 +102,7 @@ export default function index(props) {
                         </View>
                         <View>
 
-                            <Text style={styles.text1}>{newadharDetails.Uid}</Text>
+                            <Text style={styles.text1}>{adharNumber}</Text>
                         </View>
                     </View>
                     <View style={{ justifyContent: 'center', marginTop: 20 }}>
@@ -135,7 +117,7 @@ export default function index(props) {
                                 value={adharNumber}
                                 keyboardType='numeric'
                             />
-                            {/* <Text>{newadharDetails.Name}</Text> */}
+
                         </View>
                     </View>
                     <View style={{ justifyContent: 'center', marginTop: 20 }}>
@@ -149,7 +131,7 @@ export default function index(props) {
                                 onChangeText={text => setName(text)}
                                 value={name}
                             />
-                            {/* <Text>{newadharDetails.Name}</Text> */}
+
                         </View>
                     </View>
 
@@ -164,7 +146,7 @@ export default function index(props) {
                                 date={dob}
                                 mode="date"
                                 placeholder="select date"
-                                format="DD/MM/YY"
+                                format="DD/MM/YYYY"
                                 confirmBtnText="Confirm"
                                 cancelBtnText="Cancel"
                                 customStyles={{
@@ -189,7 +171,7 @@ export default function index(props) {
                             <Text style={styles.text2}>Gender</Text>
                         </View>
                         <View  >
-                            {/* <Text>{newadharDetails.Gender}</Text> */}
+
                             <Picker
                                 key={`Gender`}
                                 style={[styles.picker, { marginHorizontal: 20, width: width - 20 }]}
@@ -205,39 +187,39 @@ export default function index(props) {
                         </View>
                     </View>
                 </ScrollView>
-                {newadharDetails &&
-                    <Button
-                        Title='Save Details'
-                        // disabled={calling}
-                        style={{
-                            marginHorizontal: 3,
-                            position: "absolute",
-                            left: 10,
-                            right: 10,
-                            bottom: 15,
+
+                <Button
+                    Title='Save Details'
+                    // disabled={calling}
+                    style={{
+                        marginHorizontal: 3,
+                        position: "absolute",
+                        left: 10,
+                        right: 10,
+                        bottom: 15,
+                    }
+                    }
+                    onPress={() => {
+
+
+
+                        if (!adharNumber || adharNumber == '') {
+                            alert('UID not found')
                         }
+                        else if (!name || name == '') {
+                            alert('Name not found')
                         }
-                        onPress={() => {
+                        else if (!dob || dob == '') {
+                            alert('Date of Birth not found')
+                        }
+                        else if (!gender || gender == '') {
+                            alert('gender not found')
+                        }
+                        else {
+                            saveUserDetails()
+                        }
+                    }} />
 
-
-
-                            if (!adharNumber || adharNumber == '') {
-                                alert('UID not found')
-                            }
-                            else if (!name || name == '') {
-                                alert('Name not found')
-                            }
-                            else if (!dob || dob == '') {
-                                alert('Date of Birth not found')
-                            }
-                            else if (!gender || gender == '') {
-                                alert('gender not found')
-                            }
-                            else {
-                                saveUserDetails()
-                            }
-                        }} />
-                }
             </View>
         </View>
     )

@@ -1,11 +1,39 @@
-import React from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, FlatList } from 'react-native'
 import Config from '../../appConfig/Config'
 import Fonts from '../../appConfig/Fonts'
 import Header from '../../components/Header'
 import TestCard from '../../components/TestCard'
+import API from '../../appConfig/api'
+import Apiconstants from '../../appConfig/APIConstants'
+import AppContext from '../../appConfig/constant'
+
 
 export default function index(props) {
+    const { authToken } = useContext(AppContext)
+    const [subuserResults, setSubUserDetails] = useState([])
+
+
+    useEffect(() => {
+        // getTestHistory()
+    }, [])
+
+    const getTestHistory = () => {      //NOT BELONGS TO HERE
+        console.warn(authToken)
+        var data = new FormData()
+        data.append('authcode', authToken);
+        API(Apiconstants.GET_SUBUSER_RESULTS, data, "POST", null)
+            .then((res) => {
+                if (res.data.code == 200) {
+                    setSubUserDetails(res.data.data)
+                }
+                // setCalling(false)
+                console.warn('TEST HISTORY', res.data)
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header onPressBack={() => props.navigation.goBack()} />
@@ -66,7 +94,7 @@ export default function index(props) {
                     <Text style={{ fontFamily: Fonts.medium, fontSize: 18, color: Config.dark, marginTop: 20 }}>Related Aadhar number tests</Text>
 
                     <FlatList
-                        data={['NEGATIVE', 'POSITIVE']}
+                        data={subuserResults}
                         renderItem={(({ item }) =>
                             <TestCard Data={item} />
                         )}

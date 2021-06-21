@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'rea
 function Button(props) {
     return (
         <TouchableOpacity
+            activeOpacity={0.8}
             disabled={props.calling}
             style={[styles.button, props.style]}
             onPress={props.onPress}>

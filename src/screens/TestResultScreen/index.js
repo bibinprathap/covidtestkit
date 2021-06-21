@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StyleSheet, Text, View, ScrollView, Modal, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Modal, TouchableOpacity, BackHandler } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import Config from '../../appConfig/Config'
 import Fonts from '../../appConfig/Fonts'
@@ -38,6 +38,22 @@ export default function index(props) {
         });
 
     }
+    useEffect(() => {
+        if (props.navigation.isFocused()) {
+            const backAction = () => {
+                props.navigation.navigate('home')
+                return true;
+            };
+
+            const backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                backAction
+            );
+
+            return () => backHandler.remove();
+        }
+        else false
+    }, []);
 
     const genarateReport = async () => {
 
@@ -106,7 +122,7 @@ export default function index(props) {
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <Header
-                onPressBack={() => props.navigation.goBack()}
+                onPressBack={() => props.navigation.navigate('home')}
             />
             <ScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
                 <View style={{ height: 200, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -125,7 +141,7 @@ export default function index(props) {
                         <Text style={styles.headFonts}>KIT Number</Text>
                         <Text style={styles.dataFont}>{code}</Text>
                     </View>
-                    <View>
+                    {/* <View>
                         <Text style={styles.headFonts}>Name</Text>
                         <Text style={styles.dataFont}>{userDetials.name}</Text>
                     </View>
@@ -136,7 +152,7 @@ export default function index(props) {
                     <View>
                         <Text style={styles.headFonts}>Aadhar Number</Text>
                         <Text style={styles.dataFont}>{userDetials.uId}</Text>
-                    </View>
+                    </View> */}
                 </View>
             </ScrollView>
 

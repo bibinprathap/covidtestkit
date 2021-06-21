@@ -26,12 +26,12 @@ const HEIGHT = Dimensions.get("window").height;
 
 export default function CovidTestKitScanScreen({ navigation, route }) {
     const { code, testId } = route.params;
-    //{code:'111', testId:'2' }
-    //
+
+
 
     const [covidTestKitScanDetails, setCovidTestKitScanDetails] = useState(null)
     const [calling, setCalling] = useState(false)
-    const [testImage, setTestImage] = useState('')
+
 
 
     return (
@@ -39,16 +39,17 @@ export default function CovidTestKitScanScreen({ navigation, route }) {
             <DocumentScanner
                 TestResult
                 TestID={testId}
-                onSuccessAdharRequest={(res, doc) => {
+                onSuccessAdharRequest={(res, testImage) => {
                     setCovidTestKitScanDetails(res)
                     var covidTestKitScanDetails = res
+                    console.warn('TEST IMAGE IS', testImage)
                     navigation.navigate('testresult', { covidTestKitScanDetails, testImage, code, testId })
 
                     console.warn(res)
                 }}
                 initialImageIs={(image) => {
                     console.warn(image)
-                    setTestImage(image)
+                    // setTestImage(image)
                 }}
                 onChangeAdhar={() => {
                     setCovidTestKitScanDetails(null)

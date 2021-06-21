@@ -14,7 +14,10 @@ const APIConstants = {
   REGISTER_TEST_KIT: '/api/user/register_test_kit',
   TEST_HISTORY: '/api/user/covid_tests_history',
   COVID_TEST_GRAPG: '/api/analytics/covid_test_graph',
-  UPLOAD_PROFILE_IMAGE: '/api/user/upload_profile_image'
+  UPLOAD_PROFILE_IMAGE: '/api/user/upload_profile_image',
+  GET_SUBUSERS: '/api/user/get_subusers',
+  ADD_SUB_USER: '/api/user/add_subuser',
+  GET_ADHAR_BASED_RESULTS: '/api/user/get_result_by_uid'
 
 
 

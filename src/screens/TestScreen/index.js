@@ -5,6 +5,7 @@ import Header from '../../components/Header'
 import Fonts from '../../appConfig/Fonts'
 import Config from '../../appConfig/Config'
 import CheckBox from '@react-native-community/checkbox';
+import moment from 'moment'
 
 export default function index(props) {
     const { code, testId } = props.route.params
@@ -20,8 +21,6 @@ export default function index(props) {
                 <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
                     <View style={{ height: 100, flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View>
-                            <Text>Test ID</Text>
-                            <Text style={{ fontSize: 20 }}>{testId}</Text>
                             <Text>Test kit no</Text>
                             <Text style={{ fontSize: 20 }}>{code}</Text>
                         </View>
@@ -37,7 +36,7 @@ export default function index(props) {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
                         <View>
                             <Text style={styles.headFonts}>Test ID</Text>
-                            <Text style={{ fontFamily: Fonts.medium }}>23456</Text>
+                            <Text style={{ fontFamily: Fonts.medium }}>{testId}</Text>
                         </View>
                         <View>
                             <Text style={styles.headFonts}>Test Type</Text>
@@ -45,7 +44,7 @@ export default function index(props) {
                         </View>
                         <View>
                             <Text style={styles.headFonts}>Date</Text>
-                            <Text style={{ fontFamily: Fonts.medium, }}>05jun2021</Text>
+                            <Text style={{ fontFamily: Fonts.medium, }}>{moment().format("MMM Do YY")}</Text>
                         </View>
                     </View>
 

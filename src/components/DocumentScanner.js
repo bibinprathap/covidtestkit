@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, ActivityIndicator } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -8,25 +8,31 @@ import ImgToBase64 from 'react-native-image-base64';
 import { request, PERMISSIONS } from 'react-native-permissions';
 import ScannerX from './DocScanner/Scanner';
 import Fonts from '../appConfig/Fonts';
+import AppContext from '../appConfig/constant'
+import Snackbar from 'react-native-snackbar'
 
 
 
 
 
 function DocumentScanner(props) {
+    const { authToken } = useContext(AppContext)
     const { Data } = props
     const [doc, setDoc] = useState(null)
     const [currentRender, setRender] = useState('icon')
     const [calling, setCalling] = useState(false)
     const [failed, setFailed] = useState(false)
+    const [fullImage, setFullImage] = useState(null)
 
 
 
-    const getAdharDetails = (imageblob) => {
+    const getAdharDetails = (imageblob, initialImage) => {
+
         setCalling(true)
         console.warn('CALLING')
         var data = new FormData();
         data.append('image', imageblob);
+        data.append('authcode', authToken)
         if (props.TestResult) {
             data.append('test_id', props.TestID)
         }
@@ -39,12 +45,35 @@ function DocumentScanner(props) {
 
                 console.warn(res.data)
 
-                if (res.data.code == 200 || res.data.data) {
-                    var RESPONSE = props.TestResult ? res.data : res.data.data
+                if (!props.TestResult && res.data.code == 200) {
+                    var RESPONSE = res.data.data
                     props.onSuccessAdharRequest(RESPONSE)
                 }
+                else if (props.TestResult && res.data.code == 200) {
+                    var RESPONSE = res.data
+                    props.onSuccessAdharRequest(RESPONSE, initialImage)
+                }
                 else {
-                    alert('Details not found')
+                    console.log(res.data)
+                }
+
+                if (res.data.code == 200 || res.data.data) {
+                    var RESPONSE = props.TestResult ? res.data : res.data.data
+                    if (props.TestResult) {
+                        props.onSuccessAdharRequest(RESPONSE, initialImage)
+                    }
+                    else {
+                        props.onSuccessAdharRequest(RESPONSE)
+                    }
+
+
+                }
+                else {
+                    Snackbar.show({
+                        duration: Snackbar.LENGTH_LONG,
+                        text: "Details not Found",
+                        backgroundColor: "red",
+                    });
                     console.log(res.data)
                     setFailed(true)
                 }
@@ -52,8 +81,14 @@ function DocumentScanner(props) {
             .catch((error) => {
                 console.warn(error);
                 setCalling(false)
-                alert('Something went wrong')
-                setFailed(true)
+                Snackbar.show({
+                    duration: Snackbar.LENGTH_LONG,
+                    text: "Something went Wrong",
+                    backgroundColor: "red",
+                });
+
+                // alert('Something went wrong')
+                // setFailed(true)
 
 
 
@@ -61,11 +96,11 @@ function DocumentScanner(props) {
             });
     }
 
-    const makeBase64 = (imagePath) => {
+    const makeBase64 = (imagePath, initialImage) => {
         ImgToBase64.getBase64String(imagePath)
             .then(base64String => {
                 console.warn(base64String)
-                getAdharDetails(base64String)
+                getAdharDetails(base64String, imagePath)
 
             })
             .catch(err => console.warn(err));
@@ -73,12 +108,12 @@ function DocumentScanner(props) {
     }
 
     const onPictureProcessed = ({ croppedImage, initialImage }) => {
-        if (props.initialImageIs) {
-            props.initialImageIs(initialImage)
-        }
+
         console.warn(croppedImage, initialImage)
-        makeBase64(croppedImage)
-        setDoc(croppedImage)
+        var imageToSend = props.TestResult ? croppedImage : initialImage
+        makeBase64(imageToSend, initialImage)
+        setDoc(imageToSend)
+        setFullImage(initialImage)
 
         setRender('icon')
     };

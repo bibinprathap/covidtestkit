@@ -13,18 +13,22 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 
 function Context(props) {
-  const [userDetials, setUserDetails] = useState(null)
   const [userProfile, setUserProfile] = useState(null)
+  const [authToken, setAuthToken] = useState(null)
 
   useEffect(() => {
-    getUserDetails()
-  }, [])
+    if (authToken) {
+      getUserDetails(authToken)
+    }
+  }, [authToken])
 
-  const getUserDetails = () => {
+  const getUserDetails = (authToken) => {
+    var data = new FormData()
+    data.append('authcode', authToken);
 
-    API(Apiconstants.GET_USER_DETAILS, null, "POST", null)
+    API(Apiconstants.GET_USER_DETAILS, data, "POST", null)
       .then((res) => {
-        console.warn('USER DATA', res.data)
+        // console.warn('USER DATA', res.data)
         setUserProfile(res.data)
 
       })
@@ -66,10 +70,9 @@ function Context(props) {
   return (
     <AppContext.Provider
       value={{
-        userDetials,
-        setUserDetails,
         userProfile,
-        getUserDetails
+        getUserDetails,
+        authToken, setAuthToken
       }}>
       <Router />
       {/* <View style={{ flex: 1 }}>

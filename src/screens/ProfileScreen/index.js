@@ -11,24 +11,29 @@ import Apiconstants from '../../appConfig/APIConstants'
 import { request, PERMISSIONS } from 'react-native-permissions';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import ImgToBase64 from 'react-native-image-base64';
+import FastImage from 'react-native-fast-image'
 
 
 
 
 export default function index(props) {
-    const { userProfile, getUserDetails } = useContext(AppContext)
+    const { userProfile, getUserDetails, authToken } = useContext(AppContext)
     const [testHistory, setTestHistory] = useState([])
     const [updatingDP, setUpdatingDP] = useState(false)
 
     useEffect(() => {
         getTestHistory()
+        getUserDetails(authToken)
     }, [])
 
     const getTestHistory = () => {
-        API(Apiconstants.TEST_HISTORY, null, "POST", null)
+        console.warn(authToken)
+        var data = new FormData()
+        data.append('authcode', authToken);
+        API(Apiconstants.TEST_HISTORY, data, "POST", null)
             .then((res) => {
                 // setCalling(false)
-                console.warn('TEST HISTORY', res.data)
+                // console.warn('TEST HISTORY', res.data)
                 setTestHistory(res.data)
             })
             .catch((error) => {
@@ -40,11 +45,14 @@ export default function index(props) {
         setUpdatingDP(true)
         var data = new FormData();
         data.append('image', imageblob);
+        data.append('authcode', authToken)
         API(Apiconstants.UPLOAD_PROFILE_IMAGE, data, "POST", null)
             .then((res) => {
                 setUpdatingDP(false)
-                console.warn('USER PROFILE UPDATE', res.data)
-                getUserDetails()
+                // console.warn('USER PROFILE UPDATE', res.data)
+                if (res.data.code == 200) {
+                    getUserDetails(authToken)
+                }
             })
             .catch((error) => {
                 console.warn('UPDATE PIC', error);
@@ -97,7 +105,7 @@ export default function index(props) {
         );
     };
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <Header
                 Title='Profile'
                 onPressBack={() => props.navigation.goBack()}
@@ -121,7 +129,16 @@ export default function index(props) {
                                 }
                             }}
                             style={{ height: 60, width: 60, borderRadius: 30, borderWidth: 1, justifyContent: 'center', alignItems: 'center', borderColor: 'gray' }}>
-                            {updatingDP && <ActivityIndicator size={20} color={Config.dark} />}
+                            {/* {updatingDP && <ActivityIndicator size={20} color={Config.dark} />} */}
+                            {userProfile.profile_image ?
+                                <FastImage
+                                    style={{ height: 60, width: 60, borderRadius: 30 }}
+                                    source={{ uri: `data:image/jpeg;base64,${userProfile.profile_image}` }}
+                                />
+                                :
+                                <Feather name='user' size={30} color='gray' />
+                            }
+
                         </TouchableOpacity>
                         <Text style={{ fontFamily: Fonts.medium, fontSize: 20, marginTop: 20, width: '70%', textAlign: 'center' }}>{userProfile.name}</Text>
                     </View>

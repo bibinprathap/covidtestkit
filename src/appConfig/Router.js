@@ -21,6 +21,7 @@ import TestDetails from '../screens/TestDetailsScreen/index'
 import UserHistory from '../screens/UserHistoryScreen/index'
 import TestResult from '../screens/TestResultScreen/index'
 import CovidTestKitScanScreen from '../screens/CovidTestKitScanScreen/index'
+import Users from '../screens/UsersScreen/index'
 
 
 import AdharResult from '../screens/AdharResultScreen/index'
@@ -57,6 +58,7 @@ const MyStack = () => {
                 <Stack.Screen name='adharresult' component={AdharResult} />
                 <Stack.Screen name='timer' component={Timer} />
                 <Stack.Screen name='verifyadhar' component={VerifyAdhar} />
+                <Stack.Screen name='users' component={Users} />
 
 
 
