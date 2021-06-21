@@ -21,7 +21,7 @@ import { CommonActions } from '@react-navigation/native';
 
 
 export default function index(props) {
-    const { userProfile, authToken } = useContext(AppContext)
+    const { userProfile, authToken, callingProfile } = useContext(AppContext)
     const [showMenu, setMenu] = useState(false)
     const [calling, setCalling] = useState(false)
     const [testId, setId] = useState(null)
@@ -70,7 +70,13 @@ export default function index(props) {
             <View style={{ flex: 1 }}>
                 <HomeHeader
                     onPressBurger={() => {
-                        setMenu(true)
+                        if (userProfile && !callingProfile) {
+                            setMenu(true)
+                        }
+                        else {
+                            onLogout()
+                        }
+
                     }}
                 />
                 <View style={{ flex: 1 }}>
@@ -111,7 +117,13 @@ export default function index(props) {
                 Title='Take Test'
                 disabled={calling}
                 onPress={() => {
-                    props.navigation.navigate('users')
+                    if (userProfile && !callingProfile) {
+                        console.warn(userProfile)
+                        props.navigation.navigate('users')
+                    }
+                    else {
+                        onLogout()
+                    }
                 }}
                 style={{
                     marginHorizontal: 3,

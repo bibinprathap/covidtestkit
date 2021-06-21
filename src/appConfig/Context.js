@@ -15,6 +15,7 @@ const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 function Context(props) {
   const [userProfile, setUserProfile] = useState(null)
   const [authToken, setAuthToken] = useState(null)
+  const [callingProfile, setCallingProfile] = useState(false)
 
   useEffect(() => {
     if (authToken) {
@@ -23,13 +24,18 @@ function Context(props) {
   }, [authToken])
 
   const getUserDetails = (authToken) => {
+    setCallingProfile(true)
     var data = new FormData()
     data.append('authcode', authToken);
 
     API(Apiconstants.GET_USER_DETAILS, data, "POST", null)
       .then((res) => {
+        if (res.data.name) {
+          setUserProfile(res.data)
+        }
+        setCallingProfile(false)
+
         // console.warn('USER DATA', res.data)
-        setUserProfile(res.data)
 
       })
       .catch((error) => {
@@ -72,7 +78,8 @@ function Context(props) {
       value={{
         userProfile,
         getUserDetails,
-        authToken, setAuthToken
+        authToken, setAuthToken,
+        callingProfile
       }}>
       <Router />
       {/* <View style={{ flex: 1 }}>

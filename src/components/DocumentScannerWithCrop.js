@@ -110,8 +110,8 @@ function DocumentScanner(props) {
     const onPictureProcessed = ({ croppedImage, initialImage }) => {
 
         console.warn(croppedImage, initialImage)
-        makeBase64(croppedImage)
-        setDoc(croppedImage)
+        makeBase64(initialImage)
+        setDoc(initialImage)
 
         setRender('icon')
     };

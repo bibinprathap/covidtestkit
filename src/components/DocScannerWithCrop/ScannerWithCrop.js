@@ -695,10 +695,10 @@ export default class ScannerX extends PureComponent {
                         style={[styles.scanner]}
                     />
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, }}>
-                        <View style={{ height: 100, backgroundColor: 'rgba(0,0,0,0.7)' }}></View>
-                        <View style={{ height: 100, flexDirection: 'row' }}>
+                        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }}></View>
+                        <View style={{ height: 200, flexDirection: 'row' }}>
                             <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
-                            <View style={{ flex: 2, }} />
+                            <View style={{ flex: 1, }} />
                             <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
                         </View>
                         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
