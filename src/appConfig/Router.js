@@ -22,11 +22,10 @@ import UserHistory from '../screens/UserHistoryScreen/index'
 import TestResult from '../screens/TestResultScreen/index'
 import CovidTestKitScanScreen from '../screens/CovidTestKitScanScreen/index'
 import Users from '../screens/UsersScreen/index'
-
-
 import AdharResult from '../screens/AdharResultScreen/index'
 import Timer from '../screens/TimerScreen/index'
 import VerifyAdhar from '../screens/VerifyAdharScreen/index'
+import PatientDetails from '../screens/PatientDetailsEnteringScreen/index'
 
 enableScreens();
 const Stack = createStackNavigator();
@@ -59,6 +58,7 @@ const MyStack = () => {
                 <Stack.Screen name='timer' component={Timer} />
                 <Stack.Screen name='verifyadhar' component={VerifyAdhar} />
                 <Stack.Screen name='users' component={Users} />
+                <Stack.Screen name='patientdetails' component={PatientDetails} />
 
 
 

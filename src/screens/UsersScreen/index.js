@@ -12,7 +12,6 @@ import moment from 'moment'
 
 export default function index(props) {
     const { userProfile, authToken } = useContext(AppContext)
-    const [showmodal, setModal] = useState(false)
     const [subUsers, setSubUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(null)
 
@@ -41,49 +40,7 @@ export default function index(props) {
 
 
 
-    const registerTestKit = (code) => {
-        var data = new FormData();
-        data.append('authcode', authToken)
-        data.append('kit_id', code);
-        data.append('subuser_id', selectedUser.subuser_id);
-        console.warn(data)
 
-
-
-        API(Apiconstants.REGISTER_TEST_KIT, data, "POST", null)
-            .then((res) => {
-                console.warn(res.data)
-                if (res.data.code == 200) {
-                    Snackbar.show({
-                        duration: Snackbar.LENGTH_LONG,
-                        text: "Test kit Registered Successfully",
-                        backgroundColor: "green",
-                    });
-                    let testId = res.data.test_id
-                    props.navigation.navigate('test', { code, testId })
-
-                }
-                else {
-                    Snackbar.show({
-                        duration: Snackbar.LENGTH_LONG,
-                        text: res.data.status,
-                        backgroundColor: "red",
-                    });
-
-                }
-            })
-            .catch((error) => {
-                console.warn(error);
-
-                Snackbar.show({
-                    duration: Snackbar.LENGTH_LONG,
-                    text: "Test kit Registration Failed",
-                    backgroundColor: "red",
-                });
-
-
-            });
-    }
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <Header
@@ -96,44 +53,15 @@ export default function index(props) {
                     renderItem={(({ item }) =>
                         <UserCard
                             Data={item}
+                            EnableContinue
                             onPress={() => {
-                                setSelectedUser(item)
-                                setModal(true)
+                                props.navigation.navigate('patientdetails', { item })
                             }}
                         />
                     )}
-                // ListHeaderComponent={
-                //     userProfile ?
-                //         <UserCard
-                //             Data={userProfile}
-
-                //             onPress={() => {
-                //                 setSelectedUser(userProfile)
-                //                 setModal(true)
-                //             }}
-
-                //         /> :
-                //         false
-                // }
                 />
             </View>
-            <Modal
-                visible={showmodal}
-                animationType='fade'
-                onRequestClose={() => setModal(false)}
-            >
-                <QrScanner
-                    onReadSuccess={(code) => {
-                        console.warn('CODE IS', code)
-                        registerTestKit(code)
-                        // props.navigation.navigate('test', { code })
 
-                        setModal(false)
-                    }}
-                    onClose={() => setModal(false)}
-                />
-
-            </Modal>
         </View>
     )
 }

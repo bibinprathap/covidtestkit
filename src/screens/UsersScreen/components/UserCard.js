@@ -30,12 +30,12 @@ function UserCard(props) {
                     <Text style={styles.headFonts}>Date of Birth</Text>
                     <Text style={{ fontFamily: Fonts.medium }}>{Data.birth_date}</Text>
                 </View>
-                <Button
+                {props.EnableContinue && <Button
                     onPress={props.onPress}
                     style={styles.button}
                     Title='Continue'
 
-                />
+                />}
             </View>
 
         </View>
